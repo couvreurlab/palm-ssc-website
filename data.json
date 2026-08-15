@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-15T12:49:42",
+  "generated_at": "2026-08-15T12:56:14",
   "summary": {
     "total_species": 2560,
-    "published": 938,
-    "in_progress": 1622,
+    "published": 1279,
+    "in_progress": 1281,
     "needs_reassessment": 365,
     "never_assessed": 1257,
-    "percent_assessed": 36.6
+    "percent_assessed": 50.0
   },
   "category_breakdown": [
     {
