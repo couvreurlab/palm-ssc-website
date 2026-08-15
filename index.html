@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IUCN SSC Palm Specialist Group</title>
+<meta name="description" content="Tracking IUCN Red List assessment progress for the world's palm species (Arecaceae).">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page-plane:     #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --series-1:       #2a78d6;
+    --series-1-soft:  #cde2fb;
+    --cat-cr: #d81e05; --cat-en: #fc7f3f; --cat-vu: #e8c800; --cat-nt: #b7cc1f;
+    --cat-lc: #4fae49; --cat-dd: #9c9c94; --cat-other: #6b6b66;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --page-plane:     #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --gridline:       #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --series-1:       #3987e5;
+      --series-1-soft:  #184f95;
+      --cat-cr: #e6503f; --cat-en: #fc9b5f; --cat-vu: #e8c800; --cat-nt: #c3d94a;
+      --cat-lc: #5fc158; --cat-dd: #b5b5ac; --cat-other: #9a9a94;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--page-plane);
+    color: var(--text-primary);
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  .page-header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+  .page-header h1 { font-size: 22px; margin: 0; }
+  .page-header .updated { font-size: 12px; color: var(--text-muted); }
+
+  .site-nav { display: flex; gap: 4px; margin: 16px 0 24px; border-bottom: 1px solid var(--gridline); }
+  .site-nav button {
+    font: inherit; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: none; border: none; border-bottom: 2px solid transparent;
+    padding: 10px 4px; margin-right: 20px; cursor: pointer;
+  }
+  .site-nav button:hover { color: var(--text-primary); }
+  .site-nav button[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--series-1); }
+  .page[hidden] { display: none; }
+
+  .about-hero { margin-bottom: 22px; }
+  .about-hero h2 { font-size: 20px; margin: 0 0 8px; }
+  .about-hero p { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin: 0; max-width: 640px; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 720px) { .about-grid { grid-template-columns: 1fr; } }
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; margin-bottom: 16px; }
+  .card h2 { font-size: 14px; font-weight: 600; margin: 0 0 14px; }
+  .card .card-note { font-size: 12px; color: var(--text-muted); margin: -8px 0 14px; }
+  .card ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+  .todo { font-size: 11px; color: var(--cat-en); font-weight: 700; }
+  .people-list { display: flex; flex-direction: column; gap: 12px; }
+  .person { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+  .person .name { color: var(--text-primary); font-weight: 600; }
+  .person .role { color: var(--text-muted); text-align: right; }
+  .cta-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .cta-btn { font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 6px; text-decoration: none; border: 1px solid var(--border); color: var(--text-primary); }
+  .cta-btn.primary { background: var(--series-1); color: #fff; border-color: transparent; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 900px) { .kpi-row { grid-template-columns: 1fr 1fr; } }
+  .kpi { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+  .kpi .label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .kpi .value { font-size: 34px; font-weight: 600; line-height: 1; margin-bottom: 10px; }
+  .kpi .sub { font-size: 12px; color: var(--text-muted); }
+  .meter { height: 6px; border-radius: 3px; background: var(--gridline); overflow: hidden; margin: 10px 0 8px; }
+  .meter > span { display: block; height: 100%; background: var(--series-1); border-radius: 3px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+  .bar-row { display: grid; grid-template-columns: 100px 1fr 90px; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .bar-row .cat-label { font-size: 13px; font-weight: 600; }
+  .bar-track { position: relative; height: 20px; background: var(--gridline); border-radius: 4px; overflow: hidden; }
+  .bar-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+  .bar-row .count { font-size: 12px; color: var(--text-secondary); text-align: right; }
+
+  .trend-wrap { position: relative; }
+  svg.trend { width: 100%; height: 220px; overflow: visible; }
+  .trend-tooltip {
+    position: absolute; pointer-events: none; background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 10px; font-size: 12px; color: var(--text-primary); box-shadow: 0 2px 8px rgba(0,0,0,.12);
+    transform: translate(-50%, -110%); white-space: nowrap; opacity: 0; transition: opacity .1s;
+  }
+
+  .table-controls { margin-bottom: 12px; }
+  .table-controls input {
+    width: 100%; max-width: 320px; font-size: 13px; padding: 8px 10px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--page-plane); color: var(--text-primary);
+  }
+  table.species { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.species th { text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: .03em; padding: 8px 10px; border-bottom: 1px solid var(--gridline); }
+  table.species td { padding: 9px 10px; border-bottom: 1px solid var(--gridline); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px; color: #fff; }
+  .badge.muted { background: var(--gridline); color: var(--text-secondary); }
+  .table-empty { padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px; display: none; }
+  .table-scroll { max-height: 480px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+
+  .foot-note { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="page-header">
+    <h1>🌴 IUCN SSC Palm Specialist Group</h1>
+    <span class="updated" id="last-updated"></span>
+  </div>
+
+  <nav class="site-nav" id="site-nav">
+    <button data-page="about" aria-selected="true">About the Group</button>
+    <button data-page="results" aria-selected="false">Assessment Progress</button>
+  </nav>
+
+  <div class="page" id="page-about">
+    <div class="about-hero">
+      <h2>About the Palm Specialist Group</h2>
+      <p>The IUCN SSC Palm Specialist Group brings together researchers, conservationists and
+      Red List assessors working to document the conservation status of the world's palm species
+      (family Arecaceae). We coordinate assessments, support regional specialists, and provide
+      science-based recommendations for palm conservation worldwide.</p>
+    </div>
+
+    <div class="about-grid">
+      <div class="card">
+        <h2>What we do</h2>
+        <ul>
+          <li>Coordinate IUCN Red List assessments and reassessments for palms globally</li>
+          <li>Support regional networks of assessors and reviewers</li>
+          <li>Maintain assessment standards and provide training</li>
+          <li>Advise on conservation priorities and policy</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Group leadership <span class="todo">[TODO: confirm names]</span></h2>
+        <div class="people-list">
+          <div class="person"><span class="name">Thomas Couvreur</span><span class="role">Chair</span></div>
+          <div class="person"><span class="name">Ariane Cosiaux</span><span class="role">Red List Authority Coordinator</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Get involved</h2>
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">We welcome palm researchers and
+      conservationists interested in contributing to assessments or joining the group's regional networks.</p>
+      <div class="cta-row">
+        <a class="cta-btn primary" href="#">Contact the group</a>
+        <a class="cta-btn" href="#">Join our mailing list</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-results" hidden>
+    <div id="loading" style="padding:40px 0; text-align:center; color:var(--text-muted); font-size:13px;">Loading assessment data…</div>
+    <div id="results-content" hidden>
+
+      <div class="kpi-row">
+        <div class="kpi">
+          <div class="label">Species assessed</div>
+          <div class="value" id="kpi-percent">–</div>
+          <div class="meter"><span id="kpi-meter" style="width:0%"></span></div>
+          <div class="sub" id="kpi-percent-sub"></div>
+        </div>
+        <div class="kpi">
+          <div class="label">Total palm species (WFO)</div>
+          <div class="value" id="kpi-total">–</div>
+          <div class="sub">accepted species, full family</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Never assessed</div>
+          <div class="value" id="kpi-never">–</div>
+          <div class="sub">no IUCN assessment on record</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Overdue for reassessment</div>
+          <div class="value" id="kpi-stale">–</div>
+          <div class="sub">assessed &gt;10 years ago</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Assessed species by Red List category</h2>
+        <div class="card-note">Colours follow the official IUCN Red List category convention. Includes species overdue for reassessment.</div>
+        <div class="legend" id="cat-legend"></div>
+        <div id="cat-bars"></div>
+      </div>
+
+      <div class="card">
+        <h2>Assessments published by year</h2>
+        <div class="trend-wrap">
+          <svg class="trend" viewBox="0 0 760 220" preserveAspectRatio="none" id="trend-svg"></svg>
+          <div class="trend-tooltip" id="trend-tip"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Search species</h2>
+        <div class="table-controls">
+          <input type="text" id="species-search" placeholder="Search by species, genus, or category…">
+        </div>
+        <div class="table-scroll">
+          <table class="species">
+            <thead><tr><th>Species</th><th>Genus</th><th>Category</th><th>Year</th><th>Status</th></tr></thead>
+            <tbody id="species-tbody"></tbody>
+          </table>
+        </div>
+        <div class="table-empty" id="species-empty">No species match your search.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="foot-note">Data sourced from the IUCN Red List API and World Flora Online. Updated periodically by the group.</div>
+
+</div>
+
+<script>
+(function () {
+  var nav = document.getElementById('site-nav');
+  var pages = { about: document.getElementById('page-about'), results: document.getElementById('page-results') };
+  nav.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-page]');
+    if (!btn) return;
+    var target = btn.getAttribute('data-page');
+    Object.keys(pages).forEach(function (key) { pages[key].hidden = key !== target; });
+    nav.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-selected', b === btn ? 'true' : 'false'); });
+    if (target === 'results' && !window.__dataLoaded) loadData();
+  });
+
+  var CAT_META = {
+    CR: { name: 'Critically Endangered', varName: '--cat-cr' },
+    EN: { name: 'Endangered', varName: '--cat-en' },
+    VU: { name: 'Vulnerable', varName: '--cat-vu' },
+    NT: { name: 'Near Threatened', varName: '--cat-nt' },
+    LC: { name: 'Least Concern', varName: '--cat-lc' },
+    DD: { name: 'Data Deficient', varName: '--cat-dd' }
+  };
+  function catVar(code) { return (CAT_META[code] || { varName: '--cat-other' }).varName; }
+  function catName(code) { return (CAT_META[code] || { name: code }).name; }
+  // Severity display order
+  var CAT_ORDER = ['CR', 'EN', 'VU', 'NT', 'LC', 'DD'];
+
+  var speciesData = [];
+
+  function loadData() {
+    fetch('./data.json')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        window.__dataLoaded = true;
+        render(data);
+      })
+      .catch(function (err) {
+        document.getElementById('loading').textContent = 'Could not load data.json — ' + err;
+      });
+  }
+
+  function render(data) {
+    document.getElementById('loading').hidden = true;
+    document.getElementById('results-content').hidden = false;
+    document.getElementById('last-updated').textContent = 'Data as of ' + (data.generated_at || '').slice(0, 10);
+
+    var s = data.summary;
+    document.getElementById('kpi-percent').textContent = s.percent_assessed + '%';
+    document.getElementById('kpi-meter').style.width = s.percent_assessed + '%';
+    document.getElementById('kpi-percent-sub').textContent = s.published + ' of ' + s.total_species + ' species';
+    document.getElementById('kpi-total').textContent = s.total_species;
+    document.getElementById('kpi-never').textContent = s.never_assessed;
+    document.getElementById('kpi-stale').textContent = s.needs_reassessment;
+
+    // Category breakdown, in severity order
+    var byCode = {};
+    (data.category_breakdown || []).forEach(function (row) { byCode[row.category] = row.count; });
+    var ordered = CAT_ORDER.filter(function (c) { return byCode[c]; }).map(function (c) { return { category: c, count: byCode[c] }; });
+    (data.category_breakdown || []).forEach(function (row) {
+      if (CAT_ORDER.indexOf(row.category) === -1) ordered.push(row);
+    });
+    var totalAssessed = ordered.reduce(function (sum, r) { return sum + r.count; }, 0);
+    var maxCount = Math.max.apply(null, ordered.map(function (r) { return r.count; }).concat([1]));
+
+    var legend = document.getElementById('cat-legend');
+    var bars = document.getElementById('cat-bars');
+    ordered.forEach(function (row) {
+      var v = catVar(row.category);
+      var li = document.createElement('div');
+      li.className = 'legend-item';
+      li.innerHTML = '<span class="legend-dot" style="background:var(' + v + ')"></span>' + row.category + ' — ' + catName(row.category);
+      legend.appendChild(li);
+
+      var pct = Math.round((row.count / totalAssessed) * 100);
+      var w = Math.round((row.count / maxCount) * 100);
+      var barRow = document.createElement('div');
+      barRow.className = 'bar-row';
+      barRow.innerHTML =
+        '<div class="cat-label" style="color:var(' + v + ')">' + row.category + '</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + w + '%;background:var(' + v + ')"></div></div>' +
+        '<div class="count">' + row.count + ' (' + pct + '%)</div>';
+      bars.appendChild(barRow);
+    });
+
+    drawTrend(data.year_breakdown || []);
+
+    speciesData = data.species || [];
+    renderRows('');
+    document.getElementById('species-search').addEventListener('input', function (e) { renderRows(e.target.value); });
+  }
+
+  function drawTrend(yearRows) {
+    var svg = document.getElementById('trend-svg');
+    var tip = document.getElementById('trend-tip');
+    if (!yearRows.length) return;
+
+    var W = 760, H = 220, padL = 40, padR = 12, padT = 14, padB = 26;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var maxVal = Math.max.apply(null, yearRows.map(function (d) { return d.count; }));
+    var niceMax = Math.ceil(maxVal / 10) * 10 || 10;
+
+    function x(i) { return padL + (i / Math.max(yearRows.length - 1, 1)) * plotW; }
+    function y(v) { return padT + plotH - (v / niceMax) * plotH; }
+
+    var svgns = 'http://www.w3.org/2000/svg';
+    function el(tag, attrs) {
+      var e = document.createElementNS(svgns, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      return e;
+    }
+
+    var steps = 5;
+    for (var g = 0; g <= steps; g++) {
+      var val = Math.round((niceMax / steps) * g);
+      var gy = y(val);
+      svg.appendChild(el('line', { x1: padL, x2: W - padR, y1: gy, y2: gy, stroke: 'var(--gridline)', 'stroke-width': 1 }));
+      var t = el('text', { x: padL - 8, y: gy + 4, 'text-anchor': 'end', 'font-size': 11, fill: 'var(--text-muted)' });
+      t.textContent = val;
+      svg.appendChild(t);
+    }
+
+    var areaPts = yearRows.map(function (d, i) { return x(i) + ',' + y(d.count); }).join(' ');
+    var areaPath = 'M' + x(0) + ',' + y(0) + ' L' + areaPts + ' L' + x(yearRows.length - 1) + ',' + y(0) + ' Z';
+    svg.appendChild(el('path', { d: areaPath, fill: 'var(--series-1-soft)', opacity: 0.5, stroke: 'none' }));
+
+    var linePts = yearRows.map(function (d, i) { return x(i) + ',' + y(d.count); }).join(' ');
+    svg.appendChild(el('polyline', { points: linePts, fill: 'none', stroke: 'var(--series-1)', 'stroke-width': 2 }));
+
+    yearRows.forEach(function (d, i) {
+      if (yearRows.length > 15 && i % Math.ceil(yearRows.length / 12) !== 0 && i !== yearRows.length - 1) return;
+      var t = el('text', { x: x(i), y: H - 6, 'text-anchor': 'middle', 'font-size': 10, fill: 'var(--text-muted)' });
+      t.textContent = d.year;
+      svg.appendChild(t);
+    });
+
+    yearRows.forEach(function (d, i) {
+      var cx = x(i), cy = y(d.count);
+      svg.appendChild(el('circle', { cx: cx, cy: cy, r: 3, fill: 'var(--series-1)', stroke: 'var(--surface-1)', 'stroke-width': 2 }));
+      var hit = el('circle', { cx: cx, cy: cy, r: 12, fill: 'transparent', style: 'cursor:pointer' });
+      hit.addEventListener('mouseenter', function () { show(d, cx, cy); });
+      hit.addEventListener('mousemove', function () { show(d, cx, cy); });
+      hit.addEventListener('mouseleave', function () { tip.style.opacity = 0; });
+      svg.appendChild(hit);
+    });
+
+    function show(d, cx, cy) {
+      var rect = svg.getBoundingClientRect();
+      tip.style.left = (cx * (rect.width / W)) + 'px';
+      tip.style.top = (cy * (rect.height / H)) + 'px';
+      tip.textContent = d.year + ': ' + d.count + ' assessed';
+      tip.style.opacity = 1;
+    }
+  }
+
+  function renderRows(filter) {
+    var tbody = document.getElementById('species-tbody');
+    var emptyEl = document.getElementById('species-empty');
+    tbody.innerHTML = '';
+    var f = (filter || '').trim().toLowerCase();
+    var shown = 0;
+    var LIMIT = 300; // keep DOM light; search narrows it down
+
+    for (var i = 0; i < speciesData.length && shown < LIMIT; i++) {
+      var r = speciesData[i];
+      var hay = (r.scientific_name + ' ' + (r.genus || '') + ' ' + (r.iucn_category || '') + ' ' + (r.iucn_assessed_under_name || '')).toLowerCase();
+      if (f && hay.indexOf(f) === -1) continue;
+      shown++;
+      var catCell = r.iucn_category
+        ? '<span class="badge" style="background:var(' + catVar(r.iucn_category) + ')">' + r.iucn_category + '</span>'
+        : '<span class="badge muted">—</span>';
+      var statusCell = r.iucn_category
+        ? (r.iucn_needs_reassessment ? 'Needs reassessment' : 'Published')
+        : (r.internal_status || 'Not started');
+      var nameCell = '<em>' + r.scientific_name + '</em>';
+      if (r.iucn_assessed_under_name) {
+        nameCell += '<br><span style="font-size:11px;color:var(--text-muted);">' +
+          'assessed as <em>' + r.iucn_assessed_under_name + '</em> — synonym per WFO</span>';
+      }
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + nameCell + '</td>' +
+        '<td>' + (r.genus || '') + '</td>' +
+        '<td>' + catCell + '</td>' +
+        '<td>' + (r.iucn_year_published || '') + '</td>' +
+        '<td>' + statusCell + '</td>';
+      tbody.appendChild(tr);
+    }
+    emptyEl.style.display = shown === 0 ? 'block' : 'none';
+  }
+})();
+</script>
+</body>
+</html>
