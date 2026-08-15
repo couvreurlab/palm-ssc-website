@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-15T12:33:53",
+  "generated_at": "2026-08-15T12:49:42",
   "summary": {
     "total_species": 2560,
     "published": 938,
@@ -32,18 +32,6 @@
     {
       "category": "NT",
       "count": 80
-    },
-    {
-      "category": "LR/nt",
-      "count": 13
-    },
-    {
-      "category": "LR/lc",
-      "count": 6
-    },
-    {
-      "category": "LR/cd",
-      "count": 5
     },
     {
       "category": "EW",
@@ -3323,7 +3311,7 @@
     },
     {
       "scientific_name": "Bactris elegans",
-      "authorship": "Trail",
+      "authorship": "Schaedtler",
       "genus": "Bactris",
       "family": "Arecaceae",
       "iucn_category": "LC",
@@ -3336,7 +3324,7 @@
     },
     {
       "scientific_name": "Bactris elegans",
-      "authorship": "Schaedtler",
+      "authorship": "Trail",
       "genus": "Bactris",
       "family": "Arecaceae",
       "iucn_category": "LC",
@@ -8510,7 +8498,7 @@
     },
     {
       "scientific_name": "Calamus nicolai",
-      "authorship": "hort. & Rollis. ex Hook.f.",
+      "authorship": "Verschaff.",
       "genus": "Calamus",
       "family": "Arecaceae",
       "iucn_category": null,
@@ -8523,7 +8511,7 @@
     },
     {
       "scientific_name": "Calamus nicolai",
-      "authorship": "Verschaff.",
+      "authorship": "hort. & Rollis. ex Hook.f.",
       "genus": "Calamus",
       "family": "Arecaceae",
       "iucn_category": null,
@@ -30259,7 +30247,7 @@
     },
     {
       "scientific_name": "Rhopalostylis baueri",
-      "authorship": "H.Wendl. & Drude",
+      "authorship": "(Hook.f.) H.Wendl. & Drude",
       "genus": "Rhopalostylis",
       "family": "Arecaceae",
       "iucn_category": "NT",
@@ -30272,7 +30260,7 @@
     },
     {
       "scientific_name": "Rhopalostylis baueri",
-      "authorship": "(Hook.f.) H.Wendl. & Drude",
+      "authorship": "H.Wendl. & Drude",
       "genus": "Rhopalostylis",
       "family": "Arecaceae",
       "iucn_category": "NT",

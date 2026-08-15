@@ -47,8 +47,10 @@
   }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 60px; }
 
-  .page-header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
-  .page-header h1 { font-size: 22px; margin: 0; }
+  .page-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 4px; }
+  .page-header .brand { display: flex; align-items: center; gap: 12px; }
+  .page-header .brand img { height: 48px; width: auto; display: block; }
+  .page-header h1 { font-size: 20px; margin: 0; }
   .page-header .updated { font-size: 12px; color: var(--text-muted); }
 
   .site-nav { display: flex; gap: 4px; margin: 16px 0 24px; border-bottom: 1px solid var(--gridline); }
@@ -125,7 +127,10 @@
 <div class="wrap">
 
   <div class="page-header">
-    <h1>🌴 IUCN SSC Palm Specialist Group</h1>
+    <div class="brand">
+      <img src="logo.jpg" alt="IUCN SSC Palm Specialist Group logo">
+      <h1>IUCN SSC Palm Specialist Group</h1>
+    </div>
     <span class="updated" id="last-updated"></span>
   </div>
 
@@ -169,6 +174,7 @@
       <div class="cta-row">
         <a class="cta-btn primary" href="#">Contact the group</a>
         <a class="cta-btn" href="#">Join our mailing list</a>
+        <a class="cta-btn" href="https://iucn.org/our-union/commissions/group/iucn-ssc-palm-specialist-group" target="_blank" rel="noopener">Official IUCN SSC page ↗</a>
       </div>
     </div>
   </div>
@@ -260,8 +266,6 @@
   };
   function catVar(code) { return (CAT_META[code] || { varName: '--cat-other' }).varName; }
   function catName(code) { return (CAT_META[code] || { name: code }).name; }
-  // Severity display order
-  var CAT_ORDER = ['CR', 'EN', 'VU', 'NT', 'LC', 'DD'];
 
   var speciesData = [];
 
@@ -290,13 +294,8 @@
     document.getElementById('kpi-never').textContent = s.never_assessed;
     document.getElementById('kpi-stale').textContent = s.needs_reassessment;
 
-    // Category breakdown, in severity order
-    var byCode = {};
-    (data.category_breakdown || []).forEach(function (row) { byCode[row.category] = row.count; });
-    var ordered = CAT_ORDER.filter(function (c) { return byCode[c]; }).map(function (c) { return { category: c, count: byCode[c] }; });
-    (data.category_breakdown || []).forEach(function (row) {
-      if (CAT_ORDER.indexOf(row.category) === -1) ordered.push(row);
-    });
+    // Category breakdown, most to least assessed
+    var ordered = (data.category_breakdown || []).slice().sort(function (a, b) { return b.count - a.count; });
     var totalAssessed = ordered.reduce(function (sum, r) { return sum + r.count; }, 0);
     var maxCount = Math.max.apply(null, ordered.map(function (r) { return r.count; }).concat([1]));
 
@@ -409,7 +408,9 @@
       var statusCell = r.iucn_category
         ? (r.iucn_needs_reassessment ? 'Needs reassessment' : 'Published')
         : (r.internal_status || 'Not started');
-      var nameCell = '<em>' + r.scientific_name + '</em>';
+      var nameCell = r.iucn_assessment_url
+        ? '<a href="' + r.iucn_assessment_url + '" target="_blank" rel="noopener" style="color:inherit;"><em>' + r.scientific_name + '</em></a>'
+        : '<em>' + r.scientific_name + '</em>';
       if (r.iucn_assessed_under_name) {
         nameCell += '<br><span style="font-size:11px;color:var(--text-muted);">' +
           'assessed as <em>' + r.iucn_assessed_under_name + '</em> — synonym per WFO</span>';
