@@ -84,6 +84,9 @@
 
   .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
   @media (max-width: 900px) { .kpi-row { grid-template-columns: 1fr 1fr; } }
+  .kpi-row.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 900px) { .kpi-row.cols-3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .kpi-row.cols-3 { grid-template-columns: 1fr; } }
   .kpi { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
   .kpi .label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
   .kpi .value { font-size: 34px; font-weight: 600; line-height: 1; margin-bottom: 10px; }
@@ -99,6 +102,8 @@
   .bar-track { position: relative; height: 20px; background: var(--gridline); border-radius: 4px; overflow: hidden; }
   .bar-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
   .bar-row .count { font-size: 12px; color: var(--text-secondary); text-align: right; }
+  #ssc-cat-bars .bar-row { grid-template-columns: 130px 1fr 40px; }
+  #ssc-cat-bars .cat-label { font-size: 12px; font-weight: 600; letter-spacing: .02em; }
 
   .trend-wrap { position: relative; }
   svg.trend { width: 100%; height: 220px; overflow: visible; }
@@ -138,6 +143,7 @@
   <nav class="site-nav" id="site-nav">
     <button data-page="about" aria-selected="true">About the Group</button>
     <button data-page="results" aria-selected="false">Assessment Progress</button>
+    <button data-page="targets" aria-selected="false">SSC Targets</button>
   </nav>
 
   <div class="page" id="page-about">
@@ -242,6 +248,34 @@
     </div>
   </div>
 
+  <div class="page" id="page-targets" hidden>
+    <div class="card-note" style="margin-bottom:16px;">Snapshot from the IUCN SSC Data quadrennium reporting portal (2026–2029) as of <span id="ssc-as-of">–</span>, updated manually by the group. Detailed target pages require a group-collaborator login on <a href="https://iucnsscdata.org" target="_blank" rel="noopener" style="color:inherit;">iucnsscdata.org</a> — reach out if you'd like a walkthrough of your assigned target.</div>
+
+    <div class="kpi-row cols-3">
+      <div class="kpi">
+        <div class="label">Group collaborators</div>
+        <div class="value" id="ssc-collaborators">–</div>
+        <div class="sub">registered on SSC Data</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Targets achieved</div>
+        <div class="value" id="ssc-achieved-percent">–</div>
+        <div class="meter"><span id="ssc-achieved-meter" style="width:0%"></span></div>
+        <div class="sub" id="ssc-achieved-sub"></div>
+      </div>
+      <div class="kpi">
+        <div class="label">Quadrennium targets</div>
+        <div class="value" id="ssc-targets-total">–</div>
+        <div class="sub">2026–2029</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Targets by category</h2>
+      <div id="ssc-cat-bars"></div>
+    </div>
+  </div>
+
   <div class="foot-note">Data sourced from the IUCN Red List API and World Flora Online. Updated periodically by the group.</div>
 
 </div>
@@ -249,14 +283,14 @@
 <script>
 (function () {
   var nav = document.getElementById('site-nav');
-  var pages = { about: document.getElementById('page-about'), results: document.getElementById('page-results') };
+  var pages = { about: document.getElementById('page-about'), results: document.getElementById('page-results'), targets: document.getElementById('page-targets') };
   nav.addEventListener('click', function (e) {
     var btn = e.target.closest('button[data-page]');
     if (!btn) return;
     var target = btn.getAttribute('data-page');
     Object.keys(pages).forEach(function (key) { pages[key].hidden = key !== target; });
     nav.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-selected', b === btn ? 'true' : 'false'); });
-    if (target === 'results' && !window.__dataLoaded) loadData();
+    if ((target === 'results' || target === 'targets') && !window.__dataLoaded) loadData();
   });
 
   var CAT_META = {
@@ -323,6 +357,7 @@
     });
 
     drawTrend(data.year_breakdown || []);
+    renderSscTargets(data.ssc_targets);
 
     speciesData = data.species || [];
     renderRows('');
@@ -390,6 +425,34 @@
       tip.textContent = d.year + ': ' + d.count + ' assessed';
       tip.style.opacity = 1;
     }
+  }
+
+  function renderSscTargets(t) {
+    if (!t) return;
+    document.getElementById('ssc-as-of').textContent = t.as_of || '–';
+    document.getElementById('ssc-collaborators').textContent = t.collaborators;
+    document.getElementById('ssc-targets-total').textContent = t.targets_total;
+
+    var byStatus = t.targets_by_status || [];
+    var achieved = (byStatus.filter(function (r) { return r.status === 'Achieved'; })[0] || {}).count || 0;
+    var pct = t.targets_total ? Math.round((achieved / t.targets_total) * 100) : 0;
+    document.getElementById('ssc-achieved-percent').textContent = pct + '%';
+    document.getElementById('ssc-achieved-meter').style.width = pct + '%';
+    document.getElementById('ssc-achieved-sub').textContent = achieved + ' of ' + t.targets_total + ' targets';
+
+    var byCat = (t.targets_by_category || []).slice().sort(function (a, b) { return b.count - a.count; });
+    var maxCount = Math.max.apply(null, byCat.map(function (r) { return r.count; }).concat([1]));
+    var bars = document.getElementById('ssc-cat-bars');
+    byCat.forEach(function (row) {
+      var w = Math.round((row.count / maxCount) * 100);
+      var barRow = document.createElement('div');
+      barRow.className = 'bar-row';
+      barRow.innerHTML =
+        '<div class="cat-label">' + row.category + '</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + w + '%;background:var(--series-1)"></div></div>' +
+        '<div class="count">' + row.count + '</div>';
+      bars.appendChild(barRow);
+    });
   }
 
   function renderRows(filter) {

@@ -8,6 +8,47 @@
     "never_assessed": 1257,
     "percent_assessed": 50.0
   },
+  "ssc_targets": {
+    "as_of": "2026-08-19",
+    "collaborators": 23,
+    "targets_total": 14,
+    "targets_by_category": [
+      {
+        "category": "ASSESS",
+        "count": 5
+      },
+      {
+        "category": "NETWORK",
+        "count": 3
+      },
+      {
+        "category": "ACT",
+        "count": 2
+      },
+      {
+        "category": "COMMUNICATE",
+        "count": 1
+      },
+      {
+        "category": "PLAN",
+        "count": 1
+      },
+      {
+        "category": "MOBILISE FUNDS",
+        "count": 0
+      }
+    ],
+    "targets_by_status": [
+      {
+        "status": "Achieved",
+        "count": 2
+      },
+      {
+        "status": "Not initiated",
+        "count": 12
+      }
+    ]
+  },
   "category_breakdown": [
     {
       "category": "LC",
