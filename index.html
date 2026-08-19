@@ -127,6 +127,18 @@
   .table-empty { padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px; display: none; }
   .table-scroll { max-height: 480px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
 
+  .tf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .tf-card { background: var(--surface-1); border: 1px solid var(--border); border-left: 3px solid var(--series-1); border-radius: 10px; padding: 20px 22px; }
+  .tf-card h3 { margin: 0 0 8px; font-size: 15px; }
+  .tf-status { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 10px; background: var(--series-1-soft); color: var(--series-1); margin-bottom: 12px; }
+  .tf-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin: 0 0 14px; }
+  .tf-members { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+  .tf-members strong { color: var(--text-secondary); font-weight: 600; }
+  .tf-placeholder {
+    display: flex; align-items: center; justify-content: center; min-height: 120px;
+    border: 1px dashed var(--border); border-radius: 10px; color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;
+  }
+
   .foot-note { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 24px; }
 </style>
 </head>
@@ -145,6 +157,7 @@
     <button data-page="about" aria-selected="true">About the Group</button>
     <button data-page="results" aria-selected="false">Assessment Progress</button>
     <button data-page="targets" aria-selected="false">SSC Targets</button>
+    <button data-page="taskforces" aria-selected="false">Task Forces</button>
   </nav>
 
   <div class="page" id="page-about">
@@ -169,7 +182,7 @@
       <div class="card">
         <h2>Group leadership</h2>
         <div class="people-list">
-          <div class="person"><span class="name">Maria José Sanin</span><span class="role">Co-Chair</span></div>
+          <div class="person"><span class="name"><a href="https://www.montgomerybotanical.org/about/staff/maria-jose-sanin/" target="_blank" rel="noopener" style="color:inherit;">Maria José Sanin</a></span><span class="role">Co-Chair</span></div>
           <div class="person"><span class="name"><a href="https://couvreurlab.org" target="_blank" rel="noopener" style="color:inherit;">Thomas L.P. Couvreur</a></span><span class="role">Co-Chair</span></div>
           <div class="person"><span class="name" style="color:var(--text-muted);">Vacant</span><span class="role">Deputy Chair</span></div>
           <div class="person"><span class="name" style="color:var(--text-muted);">Vacant</span><span class="role">Red List Authority Coordinator</span></div>
@@ -281,6 +294,23 @@
     </div>
   </div>
 
+  <div class="page" id="page-taskforces" hidden>
+    <div class="card-note" style="margin-bottom:16px;">Focused working groups tackling a specific region or taxonomic group within the wider Palm Specialist Group.</div>
+
+    <div class="tf-grid">
+      <div class="tf-card">
+        <span class="tf-status">Forming</span>
+        <h3>Southeast Asian Rattans</h3>
+        <p class="tf-desc">Coordinating Red List assessment and conservation of rattan palms (subfamily Calamoideae) across Southeast Asia, building on a growing regional network of assessors.</p>
+        <div class="tf-members">
+          <strong>Lead:</strong> Benedikt Kuhnhäuser<br>
+          <strong>Members:</strong> Jiro Adorador, Randi Agusti, Remya Unnikrishnan, Senthilkumar U.
+        </div>
+      </div>
+      <div class="tf-placeholder">More task forces to be added as regional and taxonomic groups take shape.</div>
+    </div>
+  </div>
+
   <div class="foot-note">Data sourced from the IUCN Red List API and World Flora Online. Updated periodically by the group.</div>
 
 </div>
@@ -288,7 +318,7 @@
 <script>
 (function () {
   var nav = document.getElementById('site-nav');
-  var pages = { about: document.getElementById('page-about'), results: document.getElementById('page-results'), targets: document.getElementById('page-targets') };
+  var pages = { about: document.getElementById('page-about'), results: document.getElementById('page-results'), targets: document.getElementById('page-targets'), taskforces: document.getElementById('page-taskforces') };
   nav.addEventListener('click', function (e) {
     var btn = e.target.closest('button[data-page]');
     if (!btn) return;
