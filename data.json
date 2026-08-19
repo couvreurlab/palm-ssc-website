@@ -15,27 +15,33 @@
     "targets_by_category": [
       {
         "category": "ASSESS",
-        "count": 5
+        "count": 5,
+        "achieved": 0
       },
       {
         "category": "NETWORK",
-        "count": 3
+        "count": 3,
+        "achieved": 1
       },
       {
         "category": "ACT",
-        "count": 2
+        "count": 2,
+        "achieved": 0
       },
       {
         "category": "COMMUNICATE",
-        "count": 1
+        "count": 1,
+        "achieved": 1
       },
       {
         "category": "PLAN",
-        "count": 1
+        "count": 1,
+        "achieved": 0
       },
       {
         "category": "MOBILISE FUNDS",
-        "count": 0
+        "count": 0,
+        "achieved": 0
       }
     ],
     "targets_by_status": [
